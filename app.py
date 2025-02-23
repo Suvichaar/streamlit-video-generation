@@ -3,7 +3,7 @@ import os
 import requests
 import json
 import re
-
+import streamlit as st
 # Azure Whisper API Config
 AZURE_API_KEY = st.secrets["azure"]["key"]
 AZURE_WHISPER_URL = st.secrets["azure"]["whisper_url"]
