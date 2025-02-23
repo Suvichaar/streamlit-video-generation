@@ -5,8 +5,8 @@ import json
 import re
 
 # Azure Whisper API Config
-AZURE_WHISPER_URL = "https://njnam-m3jxkka3-swedencentral.cognitiveservices.azure.com/openai/deployments/whisper/audio/translations?api-version=2024-06-01"
-AZURE_API_KEY = "5MFMfdy4FsT5mqGAfDSCs8nlZktP7JOsLzAFR9PWJB4mx3l1BYDOJQQJ99AKACfhMk5XJ3w3AAAAACOGrHFP"
+AZURE_API_KEY = st.secrets["azure"]["key"]
+AZURE_WHISPER_URL = st.secrets["azure"]["whisper_url"]
 
 # Function to format timestamp for VTT
 def format_vtt_timestamp(seconds):
