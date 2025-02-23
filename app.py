@@ -33,7 +33,6 @@ def simplify_lyrics(text):
     return text[:37] + "..." if len(text) > 40 else text
 
 # Transcribing audio
-
 def transcribe_audio(file_path):
     if not os.path.exists(file_path):
         print(f"Error: Audio file '{file_path}' not found.")
@@ -135,13 +134,17 @@ def burn_subtitles_with_background(vtt_file, background_image, audio_file, outpu
 
 # Main Execution
 if __name__ == "__main__":
-    audio_path = "seeyouagain-VEED.mp3"
-    background_img = "chrismartin.jpg"
-    output_video_path = "Chris-martin-See-you-again-video1.mp4"
+    # User input
+    audio_path = input("Enter the audio file path (e.g., seeyouagain-VEED.mp3): ").strip()
+    background_img = input("Enter the background image path (e.g., chrismartin.jpg): ").strip()
+    output_video_path = input("Enter the output video name (e.g., Chris-martin-See-you-again-video1.mp4): ").strip()
 
+    # Processing
     transcript = transcribe_audio(audio_path)
     if transcript:
-        vtt_file_path = "seeyou.vtt"
+        vtt_file_path = "output_subtitles.vtt"
         generate_vtt_file(transcript, vtt_file_path)
         burn_subtitles_with_background(vtt_file_path, background_img, audio_path, output_video_path)
-        print(f"Video created: {output_video_path}")
+        print(f"🎉 Video successfully created: {output_video_path}")
+    else:
+        print("❌ Failed to transcribe the audio.")
