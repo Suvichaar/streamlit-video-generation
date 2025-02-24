@@ -87,8 +87,9 @@ def generate_vtt_file(transcript, output_vtt="transcription.vtt", max_duration_p
 st.title("🎵 Audio Transcription with Azure Whisper")
 st.write("Upload an audio file to transcribe it into subtitles.")
 
-api_key = st.text_input("Enter your Azure API Key:", type="password")
-api_url = st.text_input("Enter your Azure Whisper API URL:")
+api_url = st.secrets["azure"]["api_url"]
+api_key = st.secrets["azure"]["api_key"]
+
 uploaded_file = st.file_uploader("Upload an audio file", type=["mp3", "wav", "m4a"])
 
 if uploaded_file and api_key and api_url:
