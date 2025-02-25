@@ -10,21 +10,40 @@ tab1, tab2 = st.tabs(["🎬 Subtitle Video Generator", "🎵 Audio Transcription
 # Tab 1: Subtitle Video Generator
 with tab1:
     # First code (Subtitle Video Generator)
-    st.header("🎬 Subtitle Video Generator")
-    
+   st.header("🎬 Subtitle Video Generator")
+
     # Sidebar settings for subtitle style
     st.sidebar.header("🎨 Subtitle Styling Settings")
-    style_input = st.sidebar.text_area(
-        "ASS Subtitle Style Parameters",
-        """Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-    Style: Default,Nunito,62,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,3,2,2,10,10,490,1"""
-    )
+    font_name = st.sidebar.text_area("Font Name", "Nunito")
+    font_size = st.sidebar.text_area("Font Size", "62")
+    primary_color = st.sidebar.text_area("Primary Colour", "&H00FFFFFF")
+    secondary_color = st.sidebar.text_area("Secondary Colour", "&H000000FF")
+    outline_color = st.sidebar.text_area("Outline Colour", "&H00000000")
+    background_color = st.sidebar.text_area("Background Colour", "&H80000000")
+    bold = st.sidebar.text_area("Bold", "-1")
+    italic = st.sidebar.text_area("Italic", "0")
+    underline = st.sidebar.text_area("Underline", "0")
+    strikeout = st.sidebar.text_area("StrikeOut", "0")
+    scale_x = st.sidebar.text_area("ScaleX", "100")
+    scale_y = st.sidebar.text_area("ScaleY", "100")
+    spacing = st.sidebar.text_area("Spacing", "0")
+    angle = st.sidebar.text_area("Angle", "0")
+    border_style = st.sidebar.text_area("BorderStyle", "1")
+    outline = st.sidebar.text_area("Outline", "3")
+    shadow = st.sidebar.text_area("Shadow", "2")
+    alignment = st.sidebar.text_area("Alignment", "2")
+    margin_l = st.sidebar.text_area("MarginL", "10")
+    margin_r = st.sidebar.text_area("MarginR", "10")
+    margin_v = st.sidebar.text_area("MarginV", "490")
+    encoding = st.sidebar.text_area("Encoding", "1")
     
+    # Convert HEX and opacity to ASS format
     def hex_to_ass_color(hex_color, opacity=100):
         hex_color = hex_color.lstrip('#')
         alpha = int((100 - opacity) * 2.55)
         return f"&H{alpha:02X}{hex_color[4:6]}{hex_color[2:4]}{hex_color[0:2]}"
     
+    # Convert VTT to ASS with custom styling
     def convert_vtt_to_ass(vtt_path, ass_path):
         ass_template = f"""[Script Info]
     Title: Styled Subtitles
@@ -35,12 +54,12 @@ with tab1:
     PlayResY: 1080
     
     [V4+ Styles]
-    {style_input}
+    Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+    Style: Default,{font_name},{font_size},{primary_color},{secondary_color},{outline_color},{background_color},{bold},{italic},{underline},{strikeout},{scale_x},{scale_y},{spacing},{angle},{border_style},{outline},{shadow},{alignment},{margin_l},{margin_r},{margin_v},{encoding}
     
     [Events]
     Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     """
-        
         def convert_time(vtt_time):
             h, m, s = vtt_time.split(":")
             s, ms = s.split(".")
@@ -59,7 +78,7 @@ with tab1:
                     effect = "{\\fad(500,500)}"
                     if text:
                         ass.write(f"Dialogue: 0,{start},{end},Default,,0,0,0,,{effect}{text}\n")
-            st.success("✅ Subtitle style applied and converted to .ASS format!")
+        st.success("✅ Subtitle style applied and converted to .ASS format!")
     
     # Upload Files
     vtt_file = st.file_uploader("Upload Subtitle File (.vtt)", type=["vtt"], key="vtt_tab1")
@@ -109,6 +128,7 @@ with tab1:
                 st.error(f"Error: {e}")
         else:
             st.error("❌ Please upload all required files.")
+
 
 # Tab 2: Audio Transcription
 with tab2:
