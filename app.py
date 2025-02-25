@@ -10,10 +10,11 @@ tab1, tab2 = st.tabs(["🎬 Subtitle Video Generator", "🎵 Audio Transcription
 # Tab 1: Subtitle Video Generator
 with tab1:
     # First code (Subtitle Video Generator)
-   st.header("🎬 Subtitle Video Generator")
+    st.header("🎬 Subtitle Video Generator")
 
     # Sidebar settings for subtitle style
     st.sidebar.header("🎨 Subtitle Styling Settings")
+
     font_name = st.sidebar.text_area("Font Name", "Nunito")
     font_size = st.sidebar.text_area("Font Size", "62")
     primary_color = st.sidebar.text_area("Primary Colour", "&H00FFFFFF")
@@ -60,6 +61,7 @@ with tab1:
     [Events]
     Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     """
+        
         def convert_time(vtt_time):
             h, m, s = vtt_time.split(":")
             s, ms = s.split(".")
