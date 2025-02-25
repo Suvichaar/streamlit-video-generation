@@ -46,49 +46,49 @@ with tab1:
     # Convert VTT to ASS with custom styling
     def convert_vtt_to_ass(vtt_path, ass_path):
         ass_template = f"""[Script Info]
-        Title: Styled Subtitles
-        ScriptType: v4.00+
-        Collisions: Normal
-        PlayDepth: 0
-        PlayResX: 1920
-        PlayResY: 1080
-        
-        [V4+ Styles]
-        Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-        Style: Default,{font_name},{font_size},{primary_color},{secondary_color},{outline_color},{background_color},{bold},{italic},{underline},{strikeout},{scale_x},{scale_y},{spacing},{angle},{border_style},{outline},{shadow},{alignment},{margin_l},{margin_r},{margin_v},{encoding}
-        
-        [Events]
-        Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-        """
-            def convert_time(vtt_time):
-                h, m, s = vtt_time.split(":")
-                s, ms = s.split(".")
-                ms = ms[:2]
-                return f"{h}:{m}:{s}.{ms}"
-        
-            with open(vtt_path, "r", encoding="utf-8") as vtt, open(ass_path, "w", encoding="utf-8") as ass:
-                ass.write(ass_template)
-                lines = vtt.readlines()
-                for i in range(len(lines)):
-                    if "-->" in lines[i]:
-                        start, end = lines[i].strip().split(" --> ")
-                        start = convert_time(start)
-                        end = convert_time(end)
-                        text = lines[i + 1].strip() if i + 1 < len(lines) else ''
-                        effect = "{\\fad(500,500)}"
-                        if text:
-                            ass.write(f"Dialogue: 0,{start},{end},Default,,0,0,0,,{effect}{text}\n")
-            st.success("✅ Subtitle style applied and converted to .ASS format!")
-        
-        # Upload Files
-        vtt_file = st.file_uploader("Upload Subtitle File (.vtt)", type=["vtt"], key="vtt_tab1")
-        background_image = st.file_uploader("Upload Background Image", type=["jpg", "jpeg", "png"], key="bg_tab1")
-        audio_file = st.file_uploader("Upload Audio File (.mp3)", type=["mp3"], key="audio_tab1")
-        
-        # Output filename input
-        output_filename = st.text_input("Output Video Filename", "final_video.mp4", key="output_tab1")
+    Title: Styled Subtitles
+    ScriptType: v4.00+
+    Collisions: Normal
+    PlayDepth: 0
+    PlayResX: 1920
+    PlayResY: 1080
     
-    if st.button("Generate Video 🎥", key="generate_tab1"):
+    [V4+ Styles]
+    Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+    Style: Default,{font_name},{font_size},{primary_color},{secondary_color},{outline_color},{background_color},{bold},{italic},{underline},{strikeout},{scale_x},{scale_y},{spacing},{angle},{border_style},{outline},{shadow},{alignment},{margin_l},{margin_r},{margin_v},{encoding}
+    
+    [Events]
+    Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+    """
+        def convert_time(vtt_time):
+            h, m, s = vtt_time.split(":")
+            s, ms = s.split(".")
+            ms = ms[:2]
+            return f"{h}:{m}:{s}.{ms}"
+    
+        with open(vtt_path, "r", encoding="utf-8") as vtt, open(ass_path, "w", encoding="utf-8") as ass:
+            ass.write(ass_template)
+            lines = vtt.readlines()
+            for i in range(len(lines)):
+                if "-->" in lines[i]:
+                    start, end = lines[i].strip().split(" --> ")
+                    start = convert_time(start)
+                    end = convert_time(end)
+                    text = lines[i + 1].strip() if i + 1 < len(lines) else ''
+                    effect = "{\\fad(500,500)}"
+                    if text:
+                        ass.write(f"Dialogue: 0,{start},{end},Default,,0,0,0,,{effect}{text}\n")
+        st.success("✅ Subtitle style applied and converted to .ASS format!")
+    
+    # Upload Files with unique keys
+    vtt_file = st.file_uploader("Upload Subtitle File (.vtt)", type=["vtt"], key="vtt_file_uploader")
+    background_image = st.file_uploader("Upload Background Image", type=["jpg", "jpeg", "png"], key="background_uploader")
+    audio_file = st.file_uploader("Upload Audio File (.mp3)", type=["mp3"], key="audio_uploader")
+    
+    # Output filename input
+    output_filename = st.text_input("Output Video Filename", "final_video.mp4", key="output_filename")
+    
+    if st.button("Generate Video 🎥", key="generate_video"):
         if vtt_file and background_image and audio_file:
             with open("input_subtitles.vtt", "wb") as f:
                 f.write(vtt_file.read())
@@ -122,13 +122,12 @@ with tab1:
     
                 st.success(f"✅ Successfully created the video: {output_filename}")
                 with open(output_filename, "rb") as file:
-                    st.download_button("⬇️ Download Video", file, output_filename, key="download_tab1")
+                    st.download_button("⬇️ Download Video", file, output_filename, key="download_video")
     
             except subprocess.CalledProcessError as e:
                 st.error(f"Error: {e}")
         else:
             st.error("❌ Please upload all required files.")
-
 
 # Tab 2: Audio Transcription
 with tab2:
