@@ -5,7 +5,7 @@ import requests
 import re
 
 # Tab setup
-tab1, tab2 = st.tabs(["🎬 Subtitle Video Generator", "🎵 Audio Transcription"])
+tab1, tab2, tab3 = st.tabs(["🎬 Subtitle Video Generator", "🎵 Audio Transcription", "📹 Video Logo Overlay"])
 
 # Tab 1: Subtitle Video Generator
 with tab1:
@@ -236,3 +236,55 @@ with tab2:
                         key="download_tab2"
                     )
         os.remove(temp_file_path)
+
+with tab3:
+    st.title("Video Logo Overlay App")
+    
+    uploaded_video = st.file_uploader("Upload Video", type=["mp4", "mov", "avi"])
+    uploaded_logo = st.file_uploader("Upload Logo", type=["png", "jpg", "jpeg"])
+    position = st.selectbox("Select Logo Position", ["top-left", "top-right", "bottom-left", "bottom-right", "center"])
+    
+    def add_logo_to_video(video_path, logo_path, output_path, position="top-right"):
+        positions = {
+            "top-left": "10:10",
+            "top-right": "W-w-10:10",
+            "bottom-left": "10:H-h-10",
+            "bottom-right": "W-w-10:H-h-10",
+            "center": "(W-w)/2:(H-h)/2"
+        }
+        overlay_position = positions.get(position, "W-w-10:10")
+    
+        command = [
+            "ffmpeg",
+            "-i", video_path,
+            "-i", logo_path,
+            "-filter_complex", f"[1:v]scale=iw*0.2:-1[logo];[0:v][logo]overlay={overlay_position}",
+            "-c:a", "copy",
+            output_path
+        ]
+    
+        try:
+            subprocess.run(command, check=True)
+            return True, output_path
+        except subprocess.CalledProcessError as e:
+            return False, str(e)
+    
+    if uploaded_video and uploaded_logo:
+        video_path = os.path.join("temp_video.mp4")
+        logo_path = os.path.join("temp_logo.png")
+        output_path = "output_video.mp4"
+    
+        with open(video_path, "wb") as f:
+            f.write(uploaded_video.read())
+        with open(logo_path, "wb") as f:
+            f.write(uploaded_logo.read())
+    
+        if st.button("Process Video"):
+            success, result = add_logo_to_video(video_path, logo_path, output_path, position)
+            if success:
+                with open(output_path, "rb") as file:
+                    st.download_button("Download Processed Video", file, "output_video.mp4")
+                st.success("Logo added successfully!")
+            else:
+                st.error(f"Error: {result}")
+
